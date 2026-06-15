@@ -1,0 +1,14 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+*.log
+logs
+.vite
+*.tsbuildinfo
+
+# Build artifacts / scratch
+
+# scratch motion frames
+docs/.scratch/

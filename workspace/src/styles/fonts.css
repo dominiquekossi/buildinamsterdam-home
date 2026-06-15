@@ -1,0 +1,45 @@
+/**
+ * Self-hosted proprietary fonts — ported verbatim from artifacts/crawl/css.css.
+ * Drop the licensed .woff2 / .woff files into /public/fonts/ (see public/fonts/README.md).
+ * File names below match the original site so paths resolve once the files are present.
+ */
+@font-face {
+  font-weight: 400;
+  font-family: RecklessNeue-Book;
+  font-style: normal;
+  src: url(/fonts/RecklessNeue-Book.woff2) format("woff2"),
+    url(/fonts/RecklessNeue-Book.woff) format("woff");
+  font-display: block;
+}
+@font-face {
+  font-weight: 400;
+  font-family: RecklessNeue-Book;
+  font-style: italic;
+  src: url(/fonts/RecklessNeue-BookItalic.woff2) format("woff2"),
+    url(/fonts/RecklessNeue-BookItalic.woff) format("woff");
+  font-display: block;
+}
+@font-face {
+  font-weight: 400;
+  font-family: NHaasGroteskTXPro;
+  font-style: normal;
+  src: url(/fonts/NHaasGroteskTXPro-55Rg.woff2) format("woff2"),
+    url(/fonts/NHaasGroteskTXPro-55Rg.woff) format("woff");
+  font-display: swap;
+}
+@font-face {
+  font-weight: 500;
+  font-family: NHaasGroteskTXPro;
+  font-style: normal;
+  src: url(/fonts/NHaasGroteskTXPro-65Md.woff2) format("woff2"),
+    url(/fonts/NHaasGroteskTXPro-65Md.woff) format("woff");
+  font-display: swap;
+}
+@font-face {
+  font-weight: 400;
+  font-family: NHaasGroteskDSPro;
+  font-style: normal;
+  src: url(/fonts/NHaasGroteskDSPro-55Rg.woff2) format("woff2"),
+    url(/fonts/NHaasGroteskDSPro-55Rg.woff) format("woff");
+  font-display: swap;
+}
