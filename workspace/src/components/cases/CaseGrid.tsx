@@ -42,7 +42,8 @@ const SPREAD_PCT = [-65, 65, -65, 65];
 
 export default function CaseGrid({ filterOpen = false }: { filterOpen?: boolean }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  useCasesScroll(containerRef);
+  // Section 3 + auto-pan: filterOpen suspends the auto-pan while the panel is open (verified live).
+  useCasesScroll(containerRef, filterOpen);
   // Section 5 entrance: row-staggered opacity fade on the per-card wrappers (once, on mount).
   useCardEntrance(containerRef);
   // Section 5 entrance: per-column ±50px translateY settle on the [data-cases-settle] layer (once).

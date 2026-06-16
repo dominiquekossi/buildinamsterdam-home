@@ -83,20 +83,11 @@ export default function CasesPage() {
         <HeaderLogo />
       </div>
 
-      {/* Filter (Section 4): trigger when closed, panel + context label when open. Fixed overlays,
-          siblings of MenuButton so they sit above the grid and don't ride the nav-shift wrapper. */}
-      {filterOpen ? (
-        <>
-          <FilterPanel />
-          {/* Filter-state context label — a cases-scoped "Work" near the bottom-left of the disc
-              (live x≈380/y≈671 @1024). Distinct from the NavOverlay "Work" link. */}
-          <span className="fixed bottom-[64px] left-1/2 z-30 ml-[-132px] font-ui text-[max(16px,calc(11.2px+0.33333vw))] font-medium uppercase leading-none text-black">
-            Work
-          </span>
-        </>
-      ) : (
-        <FilterTrigger onOpen={openFilter} />
-      )}
+      {/* Filter (Section 4): trigger when closed, panel when open. Fixed overlays, siblings of
+          MenuButton so they sit above the grid and don't ride the nav-shift wrapper. The live shows
+          NO "Work" context label in the filter-open state (only the panel sections + the disc's
+          "Close" — verified by DOM enumeration + screenshots 2026-06-15), so none is rendered here. */}
+      {filterOpen ? <FilterPanel /> : <FilterTrigger onOpen={openFilter} />}
 
       <MenuButton
         isOpen={navOpen}

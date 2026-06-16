@@ -187,8 +187,9 @@ export default function ContactPage() {
           </div>
           {/* HeaderLogo (shared) — fixed top-left; its padding (2vw / 30px), z-index and
               mix-blend-mode:exclusion all live INSIDE the shared component and are NOT re-styled
-              here. Inside the transformed wrapper, so it rides up with the content on nav-open. */}
-          <HeaderLogo />
+              here. Inside the transformed wrapper, so it rides up with the content on nav-open.
+              variant="short" → only the "BiA." mark (live shows the short logo on /contact). */}
+          <HeaderLogo variant="short" />
         </section>
       </div>
       <MenuButton isOpen={navOpen} onClick={toggleNav} revealed />

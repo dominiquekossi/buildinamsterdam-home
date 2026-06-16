@@ -18,7 +18,20 @@
 | box-sizing | border-box | — | — |
 
 - **`padding-left` = 9vw exato** (92.16/1024 = 129.6/1440 = 172.8/1920 = 0.09). Demais paddings = 0. **Largura útil do conteúdo** = `larguraColuna − 9vw` = `0.41·vw` → **419.84 @1024 / 590.41 @1440 / ~787 @1920**.
-- **Sticky é INERTE/decorativo**: a página não rola (`scrollHeight===innerHeight===900`), então o `sticky top:0` nunca se desloca — `infoY` permanece 0. A coluna já é full-height (900). Reproduzir o valor é fiel, mas funcionalmente é estático.
+- **Sticky é INERTE/decorativo**: a página não rola (`scrollHeight===innerHeight===900`), então o `sticky top:0` nunca se desloca — `infoY` permanece 0. A coluna já é full-height (900). Reproduzir o valor é fiel, mas funcionalmente é estático. **MANTIDO** (ver bullet seguinte: removê-lo NÃO conserta o AA).
+- **Anti-aliasing da coluna — SEM fundo opaco (decisão final):** a `.order-2` fica com fundo
+  **TRANSPARENTE** (NÃO usar `bg-white`). Verificado no render **NATIVO** (janela real, não DevTools
+  emulado, DPR=1 real): sem fundo, o rebuild pinta **grayscale AA** = **BATE o live** (franja R/G/B = **0**
+  nos dois, meanLum **243.73** idêntico). O `-webkit-font-smoothing` é IDÊNTICO ao live (`body: antialiased`
+  em globals.css) e inerte neste Chrome-Windows — NÃO é a causa de nada.
+  - **HISTÓRICO (erro corrigido):** numa fase anterior foi adicionado `bg-white` para "consertar" um texto
+    que parecia mais pesado (grayscale). Mas aquilo era **ARTEFATO DA EMULAÇÃO do DevTools**: em página
+    emulada o live renderiza subpixel e o build grayscale; no NATIVO ambos são grayscale e já batem. O
+    `bg-white` (backing opaco) forçava **subpixel AA** no rebuild → traço mais nítido/**"mais fino"** que o
+    live grayscale, no DPR real. **Revertido.**
+  - **NOTA METODOLÓGICA (importante):** validar anti-aliasing/espessura de texto **SEMPRE em página NATIVA
+    (não-emulada)** — o device-mode emulado do DevTools renderiza o AA por outro caminho e ENGANA. Toda
+    medição de AA emulada desta sessão era enganosa nesse aspecto.
 - **Alinhamento vertical = centrado** (`justify-content:center`). O bloco (H1 + 5 blocos + FOLLOW US) é centrado nos 900px: top-gap @1440 = (900−683.06)/2 = **108.47**; @1024 = (900−721.86)/2 = **89.06**. Como o bloco é mais alto @1024 (FOLLOW US quebra em 2 linhas, +38px), o H1 começa **mais acima** @1024 → o y do H1 NÃO é fixo, decorre do centro.
 
 **Estrutura DOM (filhos flex diretos do container):**
@@ -117,7 +130,7 @@ info.sc-cd0cb232-0  (sticky, flex col, justify-center, pad-left 9vw)
 | Label (H2) | `NHaasGroteskTXPro` 500, 16px PISO (fluido >1440: max(16px, calc(11.2px+0.33333vw))), uppercase, lh 1.2em | `font-ui` + `font-medium` + `uppercase` (= NHaasGroteskTXPro) |
 | Link de ação (texto visível) | `RecklessNeue-Book` 400, 19px PISO (fluido >1440: max(19px, calc(13.3px+0.39583vw))), lh 1.2em, tracking −0.01em, #000 — pintado por nó interno, NÃO o `<a>` | `font-serif-lead` (= RecklessNeue-Book) |
 | Cor (tudo) | `#000000` | `text-black` |
-| Fundo coluna | transparente sobre branco da página | `#FFFFFF` (`white`) |
+| Fundo coluna | TRANSPARENTE (no nativo → grayscale AA, igual ao rebuild) | **TRANSPARENTE** (sem `bg-white`) — grayscale bate o live no render nativo (ver §1) |
 
 As 3 famílias batem com as registradas em `tailwind.config.ts` / `fonts.css`. **Não decidir mapeamento ainda — só reporte.**
 

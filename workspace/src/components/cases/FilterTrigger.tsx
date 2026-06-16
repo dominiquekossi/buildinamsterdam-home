@@ -32,7 +32,7 @@ export default function FilterTrigger({ onOpen }: { onOpen: () => void }) {
           type="button"
           onClick={onOpen}
           aria-label="Filter Work"
-          className="block whitespace-nowrap p-[1em] font-ui text-[calc(8.4px+0.25vw)] font-medium uppercase leading-none tracking-wide text-black [transform:rotate(90deg)]"
+          className="block whitespace-nowrap p-[1em] font-ui text-[12px] font-medium uppercase leading-[1.2] text-black [transform:rotate(90deg)]"
         >
           Filter Work
         </button>
