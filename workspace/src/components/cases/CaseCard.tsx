@@ -28,7 +28,7 @@ import { CASE_COVERS } from "./casesCovers";
  */
 
 /** Live-verified caption/pill type scale (floored fluid). */
-const FLUID_TEXT = "text-[max(14px,calc(9.8px_+_0.291667vw))] leading-[1.2]";
+const FLUID_TEXT = "text-[max(14px,calc(9.8px_+_0.291667vw))] leading-[19.2px]";
 const IMG_FADE_EASE = "cubic-bezier(0.45, 0.02, 0.09, 0.98)";
 
 export default function CaseCard({ item, eager = false }: { item: CaseItem; eager?: boolean }) {
@@ -69,6 +69,7 @@ export default function CaseCard({ item, eager = false }: { item: CaseItem; eage
             decoding="async"
             onLoad={fadeIn}
             className="absolute inset-0 h-full w-full object-cover opacity-0"
+            style={{ objectPosition: item.focal ?? "50% 50%" }}
           />
         )}
 

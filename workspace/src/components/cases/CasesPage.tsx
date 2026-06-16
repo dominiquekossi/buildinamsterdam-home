@@ -80,7 +80,7 @@ export default function CasesPage() {
         <main className="h-screen w-full overflow-hidden bg-white">
           <CaseGrid filterOpen={filterOpen} />
         </main>
-        <HeaderLogo />
+        <HeaderLogo variant="short" />
       </div>
 
       {/* Filter (Section 4): trigger when closed, panel when open. Fixed overlays, siblings of
