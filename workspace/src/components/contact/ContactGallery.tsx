@@ -1,15 +1,16 @@
 import { useLayoutEffect, useRef } from "react";
 
 /**
- * ContactGallery — the left (order-1) gallery of /contact: two vertical image tracks that
- * auto-PAN once from top to bottom-aligned, then STOP (verified live, _gallery-mechanism.md).
+ * ContactGallery — the left (order-1) gallery of /contact: two vertical image tracks driven by a
+ * single S that responds to BOTH user input (wheel/touch) and a TIME auto-pan — exactly like /cases.
  *
  * Engine = the SAME model as /cases (useCasesScroll): per-column `translateY = −S·(R_col/R_max)`,
  * clamp at S = R_max so both tracks reach their bottom-aligned end SIMULTANEOUSLY (lockstep), all
- * ranges measured at RUNTIME (never hardcoded). The DIFFERENCE: /cases drives S by wheel/touch;
- * here there is NO input — S auto-advances by TIME. So the hook is NOT reused (its wheel/touch
- * listeners would wrongly hijack scrolling on a non-scrolling page); its pattern is replicated
- * inline, time-driven, per the project guide ("replique o padrão se inline").
+ * ranges measured at RUNTIME (never hardcoded). TWO writers into one `target`: (1) wheel/touch — raw
+ * 1:1, NO lerp/inertia (the page doesn't scroll natively, so we `preventDefault` and drive S
+ * ourselves), and (2) the TIME auto-pan (advances DOWN only, SUSPENDED while input is recent, resumes
+ * after an idle HOLD). The useCasesScroll hook is NOT imported (it is coupled to /cases' `filterOpen`
+ * branch); its full two-input pattern is replicated INLINE here, keeping /contact's measured constants.
  *
  * Verified live numbers (buildId _MsCuqDt4GbkeAFMyjWlP):
  * - Master velocity on the dominant (R_max) track ≈ 18.5 px/s, WIDTH-INVARIANT (18.43@1440,
@@ -48,6 +49,8 @@ const HOLD_MS = 4200; // pan starts ~4.2s after mount (live frame-0: 4195.8ms) =
 const ENTER_OFFSET_PX = 50;
 const ENTER_MS = 1600;
 const ENTER_EASE = "cubic-bezier(0.42, 0, 0.21, 1)";
+
+const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
 const prefersReducedMotion =
   typeof window !== "undefined" &&
@@ -90,60 +93,97 @@ export default function ContactGallery() {
     measure();
     apply(0);
 
-    // reduced-motion: skip BOTH entrance and pan — columns rest at translateY 0 / opacity 1
-    // (wrappers keep their default), static. Matches live (it snaps to the settled state).
-    if (prefersReducedMotion) {
-      const onResizeRM = () => { measure(); apply(0); };
-      window.addEventListener("resize", onResizeRM);
-      return () => {
-        window.removeEventListener("resize", onResizeRM);
-        tracks.forEach((c) => (c.style.transform = ""));
-      };
-    }
-
     // ENTRANCE (outer wrapper layer — SEPARATE from the pan): each column enters translateY ±50→0
-    // + opacity 0→1 over ENTER_MS, easing cubic-bezier(0.42,0,0.21,1) (RMS-confirmed), from t=0,
-    // A & B simultaneous + mirrored (A +50, B −50). WAAPI (the CaseCard/FilterTrigger pattern) —
-    // visually equivalent to the live's rAF; fill:both holds the settled 0 / opacity-1 end state.
-    const enterOpts = { duration: ENTER_MS, easing: ENTER_EASE, fill: "both" as const };
-    const enterAnims = wrappers.map((w, i) =>
-      w.animate(
-        [
-          { transform: `translateY(${i === 0 ? ENTER_OFFSET_PX : -ENTER_OFFSET_PX}px)`, opacity: 0 },
-          { transform: "translateY(0px)", opacity: 1 },
-        ],
-        enterOpts,
-      ),
-    );
+    // + opacity 0→1 over ENTER_MS, easing cubic-bezier(0.42,0,0.21,1) (RMS-confirmed), A & B
+    // simultaneous + mirrored (A +50, B −50). WAAPI (the CaseCard/FilterTrigger pattern); fill:both
+    // holds the settled 0 / opacity-1 end state. reduced-motion → SKIP the entrance: wrappers rest at
+    // their default (translateY 0 / opacity 1; the JSX has no initial offset), visible & static.
+    const enterAnims = prefersReducedMotion
+      ? []
+      : wrappers.map((w, i) =>
+          w.animate(
+            [
+              { transform: `translateY(${i === 0 ? ENTER_OFFSET_PX : -ENTER_OFFSET_PX}px)`, opacity: 0 },
+              { transform: "translateY(0px)", opacity: 1 },
+            ],
+            { duration: ENTER_MS, easing: ENTER_EASE, fill: "both" as const },
+          ),
+        );
 
+    // PAN — a single S driven by TWO writers into one `target` (the /cases useCasesScroll model,
+    // replicated inline): (1) USER INPUT (wheel/touch) — raw 1:1, NO lerp/inertia; (2) TIME auto-pan —
+    // advances DOWN only, gated to run ONLY when idle (no input within HOLD_MS). S tracks clamp(target)
+    // each frame; per-track translateY = −S·(range_i/rMax) keeps A & B in lockstep (unchanged).
+    // lastInputT starts at mount → the first auto-pan begins HOLD_MS after load (entrance ~1.6s has
+    // settled by then) — same initial behaviour as before. autoStartT (null = suspended) re-ramps
+    // 0→cruise over RAMP_MS from the CURRENT S on start AND on every resume after input (no catch-up).
     let S = 0;
+    let target = 0;
     let raf = 0;
-    let startT = 0;
-    let last = 0;
-    let motionMs = 0; // elapsed motion time since the pan began — drives the velocity ramp
-    const frame = (t: number) => {
-      if (!startT) startT = t;
-      if (t - startT < HOLD_MS) { raf = requestAnimationFrame(frame); return; } // hold at top
-      if (!last) last = t;
-      const dt = Math.min(0.05, (t - last) / 1000); // clamp dt so a stalled tab can't jump
-      last = t;
-      // Start-up ramp: velocity rises LINEARLY 0→cruise over RAMP_MS (constant acceleration,
-      // live-measured ~350–400ms), then saturates at cruise. S = ∫v·dt → S grows quadratically
-      // during the ramp, linearly after — NOT an eased tween of S, and no named/house curve.
-      // The ramp acts on the MASTER S, so A & B share it and stay in lockstep automatically.
-      motionMs += dt * 1000;
-      const v = motionMs < RAMP_MS ? PAN_PX_PER_SEC * (motionMs / RAMP_MS) : PAN_PX_PER_SEC;
-      S = Math.min(rMax, S + v * dt); // integrate velocity; clamp at R_max (settle)
-      apply(S);
-      if (S < rMax) raf = requestAnimationFrame(frame); // stop once clamped at the end (settles)
+    let lastInputT = performance.now();
+    let autoStartT: number | null = null;
+    let lastFrameT = performance.now();
+    const markInput = () => { lastInputT = performance.now(); };
+
+    const frame = () => {
+      const now = performance.now();
+      const dt = Math.min(0.05, (now - lastFrameT) / 1000); // clamp dt so a stalled tab can't jump
+      lastFrameT = now;
+      if (!prefersReducedMotion && now - lastInputT >= HOLD_MS) {
+        // Idle ≥ HOLD_MS → auto-pan DOWN, re-ramping 0→cruise from this resume's start (autoStartT).
+        if (autoStartT === null) autoStartT = now;
+        const rampElapsed = now - autoStartT;
+        const v = rampElapsed >= RAMP_MS ? PAN_PX_PER_SEC : PAN_PX_PER_SEC * (rampElapsed / RAMP_MS);
+        target = Math.min(rMax, target + v * dt); // advance from CURRENT S; clamp at R_max (no reverse)
+      } else {
+        // Recent input (or reduced-motion) → no auto; reset the ramp so the next resume starts at rest.
+        autoStartT = null;
+      }
+      const next = clamp(target, 0, rMax);
+      if (next !== S) { S = next; apply(S); }
+      raf = requestAnimationFrame(frame); // runs continuously — the user may scroll up again after clamp
     };
+
+    // USER INPUT — wheel + touch write `target` raw 1:1 (mirrors useCasesScroll). deltaY in px, NOT
+    // normalized (paridade com /cases). preventDefault blocks any native page scroll. touchstart only
+    // records the start Y + marks input; touchmove integrates the drag delta. markInput() suspends the
+    // auto-pan for HOLD_MS and (via the else branch) resets the ramp so the resume re-ramps from rest.
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      target = clamp(target + e.deltaY, 0, rMax);
+      markInput();
+    };
+    let touchY = 0;
+    const onTouchStart = (e: TouchEvent) => {
+      touchY = e.touches[0]?.clientY ?? 0;
+      markInput();
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      const y = e.touches[0]?.clientY ?? touchY;
+      target = clamp(target + (touchY - y), 0, rMax);
+      touchY = y;
+      markInput();
+      e.preventDefault();
+    };
+    const onResize = () => {
+      measure();
+      target = clamp(target, 0, rMax);
+      S = clamp(S, 0, rMax);
+      apply(S);
+    };
+
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    window.addEventListener("resize", onResize);
     raf = requestAnimationFrame(frame);
 
-    const onResize = () => { measure(); apply(Math.min(S, rMax)); };
-    window.addEventListener("resize", onResize);
     return () => {
       cancelAnimationFrame(raf);
       enterAnims.forEach((a) => a.cancel());
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("resize", onResize);
       wrappers.forEach((w) => { w.style.transform = ""; w.style.opacity = ""; });
       tracks.forEach((c) => (c.style.transform = ""));

@@ -131,7 +131,7 @@ export default function ContactPage() {
                 @1024 FOLLOW US wrap both emerge from the Reckless-19px link line (22.8) + gap-56 + flex-wrap.
                 Both the labels and the links are FLUID >1440 via the same s(vw)=max(1,0.7+0.3·vw/1440) as
                 the H1 (floors 16px / 19px), so the rhythm tracks the live across widths (103.58 ≤1440 → 107.78 @1920). */}
-            <div className="order-2 sticky top-0 flex h-full flex-col justify-center pl-[9vw] leading-[normal]">
+            <div className="order-2 sticky top-0 flex h-[100svh] flex-col justify-center pl-[9vw] leading-[normal]">
               {/* H1 — RecklessNeue-Book via font-serif-lead (same class the home lead uses; also
                   enables the ss04/06/07/10/14 stylistic sets). Fluid >1440 via the project's s(vw)
                   pattern: max(36px, 25.2px+0.75vw) = 36·max(1, 0.7+0.3·vw/1440); floor 36px ≤1440.
