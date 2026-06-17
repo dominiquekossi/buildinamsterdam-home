@@ -175,6 +175,8 @@ Conclusão: os 4 são as versões compartilhadas/home, **sem variação de cor/p
 
 `loading="lazy"`. Col1 recorta a ~**0.667** (2:3), col2 a ~**0.708** → alturas de célula diferentes por coluna (escalonado).
 
+> **Office 1 — crop retrato centrado é DELIBERADO (2026-06-17).** Source é paisagem (`1439×1068`, AR 1.347), mas o asset local é crop retrato centrado **`686×1029`** (AR 0.667). A caixa retrato + `object-cover 50% 50%` mostram só a faixa central — medido **idêntico ao live** (Δ horizontal ≈ 0 em S=0). O live também **não** serve a paisagem cheia (`sizes=22vw`, rendition ~316px dimensionada ao display); servir a paisagem completa só adicionaria banda nunca exibida (+82 KB). **NÃO regenerar como paisagem** — ver `_gallery-mechanism.md`.
+
 ### NavOverlay (menu compartilhado) — thumbnails Storyblok (render ~370.8×198.5 @1440, abaixo da dobra)
 `home-desktop.png` 1500×794 · `work-desktop-2024-july.jpg` 3000×1588 · `expertise-desktop-thumb.jpg` 6000×3176 · `about-desktop.png` 1500×794 · `contacts-desktop.png` 1500×794 · `joinus-desktop.jpg` 1420×752 · `knowledge-desktop-v2.png` 1500×794. (Alguns aparecem duplicados em 0×0 = variantes picture/mobile ocultas.)
 Ícones sociais SVG: `/f/158533/15x15/8feb7017f5/logo-instagram.svg` (render 14.1×14.1) · `/f/158533/15x16/d9a6eabb37/logo-linkedin.svg` (render 13.2×14.1).

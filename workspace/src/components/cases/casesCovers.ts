@@ -33,7 +33,7 @@ export const CASE_COVERS: Record<string, CaseCover> = {
   "polaroid-i-2": {"src":"/images/polaroid-i-2.webp","w":719,"h":446,"src2x":"/images/polaroid-i-2@2x.webp","w2":1439,"h2":892},
   "the-balvenie": {"src":"/images/the-balvenie.webp","w":669,"h":446,"src2x":"/images/the-balvenie@2x.webp","w2":1338,"h2":892},
   "land-of-ride": {"src":"/images/land-of-ride.webp","w":787,"h":446,"src2x":"/images/land-of-ride@2x.webp","w2":1574,"h2":892},
-  "secrid": {"src":"/images/secrid.webp","w":512,"h":786,"src2x":"/images/secrid@2x.webp","w2":1024,"h2":1571},
+  "secrid": {"src":"/images/secrid.webp","w":512,"h":296,"src2x":"/images/secrid@2x.webp","w2":1024,"h2":591},
   "foam-talent-2021": {"src":"/images/foam-talent-2021.webp","w":512,"h":765,"src2x":"/images/foam-talent-2021@2x.webp","w2":1024,"h2":1530},
   "moooi": {"src":"/images/moooi.webp","w":512,"h":640,"src2x":"/images/moooi@2x.webp","w2":1024,"h2":1280},
   "alpine": {"src":"/images/alpine.webp","w":512,"h":649,"src2x":"/images/alpine@2x.webp","w2":1024,"h2":1297},
@@ -42,6 +42,6 @@ export const CASE_COVERS: Record<string, CaseCover> = {
   "ace-and-tate": {"src":"/images/ace-and-tate.webp","w":512,"h":640,"src2x":"/images/ace-and-tate@2x.webp","w2":1024,"h2":1281},
   "koleksiyon": {"src":"/images/koleksiyon.webp","w":886,"h":502,"src2x":"/images/koleksiyon@2x.webp","w2":1771,"h2":1004},
   "studio-job": {"src":"/images/studio-job.webp","w":812,"h":502,"src2x":"/images/studio-job@2x.webp","w2":1623,"h2":1004},
-  "stellar-development": {"src":"/images/stellar-development.webp","w":512,"h":785,"src2x":"/images/stellar-development@2x.webp","w2":1024,"h2":1570},
+  "stellar-development": {"src":"/images/stellar-development.webp","w":512,"h":325,"src2x":"/images/stellar-development@2x.webp","w2":1024,"h2":650},
   "vitra": {"src":"/images/vitra.webp","w":886,"h":502,"src2x":"/images/vitra@2x.webp","w2":1772,"h2":1004},
 };
