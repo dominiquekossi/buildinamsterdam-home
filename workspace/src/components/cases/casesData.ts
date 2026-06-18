@@ -58,7 +58,7 @@ export const CASE_COLUMNS: CaseItem[][] = [
     { slug: "polaroid-i-2", focal: "50.03% 29.24%", name: "Polaroid I-2", desc: "Shoppable campaign site to launch the premium I–2 camera", pill: "Shopify", alt: "Polaroid cover", ar: "3:4" },
     { slug: "the-balvenie", focal: "45.4% 36.86%", name: "The Balvenie", desc: "A digital journey", alt: "Rare Marriages The Balvenie", ar: "3:4" },
     { slug: "land-of-ride", name: "Land of Ride", desc: "Unfold the world of adventures", pill: "Shopify", alt: "Land of Ride", ar: "3:4" },
-    { slug: "secrid", name: "Secrid", desc: "A better world starts in your pocket", alt: "s", ar: "3:4", caption: "dark" },
+    { slug: "secrid", name: "Secrid", desc: "A better world starts in your pocket", alt: "Secrid", ar: "3:4", caption: "dark" },
     { slug: "foam-talent-2021", name: "Foam Talent 2021", desc: "A digital exhibition celebrating emotional browsing", pill: "Most Awarded", alt: "Foam Talent 2021", ar: "3:4" },
     { slug: "moooi", focal: "49.5% 43%", name: "Moooi", desc: "Multi-sensory flagship store", alt: "Moooi-Milan-Design-Week-2024-", ar: "3:4" },
   ],
@@ -70,7 +70,7 @@ export const CASE_COLUMNS: CaseItem[][] = [
     { slug: "ace-and-tate", focal: "59.6% 30.73%", name: "Ace & Tate", desc: "Envisioning the omnichannel future of eyewear", alt: "Ace andTate portrait", ar: "2:3" },
     { slug: "koleksiyon", name: "Koleksiyon", desc: "A digital platform inspired by life", pill: "Newly Added", alt: "A red modern armchair with a metal base on a red background, with a tabby cat partially hidden behind the chair.", ar: "2:3" },
     { slug: "studio-job", focal: "46.8% 28.72%", name: "Studio Job", desc: "Digital art piece for an artist", alt: "Studio Job Banana", ar: "2:3", caption: "dark" },
-    { slug: "stellar-development", name: "Stellar development", desc: "Developing destinations", alt: "sd", ar: "2:3" },
-    { slug: "vitra", name: "Vitra", desc: "Office chair finder", alt: "1", ar: "2:3", caption: "dark" },
+    { slug: "stellar-development", name: "Stellar development", desc: "Developing destinations", alt: "Stellar Development", ar: "2:3" },
+    { slug: "vitra", name: "Vitra", desc: "Office chair finder", alt: "Vitra office chair finder", ar: "2:3", caption: "dark" },
   ],
 ];

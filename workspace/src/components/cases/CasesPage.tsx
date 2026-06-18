@@ -81,13 +81,18 @@ export default function CasesPage() {
           <CaseGrid filterOpen={filterOpen} />
         </main>
         <HeaderLogo variant="short" />
-      </div>
 
-      {/* Filter (Section 4): trigger when closed, panel when open. Fixed overlays, siblings of
-          MenuButton so they sit above the grid and don't ride the nav-shift wrapper. The live shows
-          NO "Work" context label in the filter-open state (only the panel sections + the disc's
-          "Close" — verified by DOM enumeration + screenshots 2026-06-15), so none is rendered here. */}
-      {filterOpen ? <FilterPanel /> : <FilterTrigger onOpen={openFilter} />}
+        {/* Filter (Section 4): trigger when closed, panel when open. Rendered INSIDE the nav-shift
+            wrapper (not a fixed sibling) so it rides the wrapper's translateY when the nav opens —
+            matching the live, where "Filter Work" is a descendant of the shifted content container
+            (verified 2026-06-17: live & build both translateY −399px / 0.65s house ease; only the DOM
+            placement differed, so our trigger used to stay put and overlap the opened nav). They keep
+            position:fixed: when the nav opens the wrapper's transform becomes their containing block so
+            they ride the −399 shift; when the nav is closed (transform: none) they stay viewport-fixed
+            (trigger centered, panel full-height). The live shows NO bottom "Work" context label in the
+            filter-open state, so none is rendered. */}
+        {filterOpen ? <FilterPanel /> : <FilterTrigger onOpen={openFilter} />}
+      </div>
 
       <MenuButton
         isOpen={navOpen}
