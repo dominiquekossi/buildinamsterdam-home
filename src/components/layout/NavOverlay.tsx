@@ -30,6 +30,7 @@
  */
 import { useEffect, useRef } from "react";
 import DotLabel from "../shared/DotLabel";
+import { asset } from "@/utils/assetPath";
 
 /** Fraction of the viewport on each side that maps to the clamped ends (verified ≈0.285). */
 const SCROLL_MARGIN = 0.285;
@@ -53,20 +54,71 @@ interface NavItem {
 // 4× of the old 1500px JPEGs, which softened fine text + added gradient moiré at DPR1). Verified
 // legible at 1024/1440, DPR1/DPR2. ~15–44KB each (was ~80KB JPEG). See live-reference-drift memory.
 const ITEMS: NavItem[] = [
-  { id: "Home", label: "Home", href: "/", thumb: "/images/home-page-desktop-thumbnail.webp", active: true },
-  { id: "Work", label: "Work", href: "/cases", thumb: "/images/work-page-desktop-thumbnail.webp" },
-  { id: "Expertise", label: "Expertise", href: "/expertise", thumb: "/images/expertise-desktop-thumbnail.webp" },
-  { id: "About", label: "About", href: "/about", thumb: "/images/about-us-desktop-thumbnail.webp" },
-  { id: "Contact", label: "Contact", href: "/contact", thumb: "/images/contacts-page-desktop-thumbnail.webp" },
-  { id: "Join us", label: "Join us", href: "https://jobs.buildinamsterdam.com/", thumb: "/images/join-us-desktop-thumbnail.webp", external: true },
-  { id: "Knowledge", label: "Knowledge", href: "/articles", thumb: "/images/knowledge-page-desktop-thumbnail.webp" },
+  {
+    id: "Home",
+    label: "Home",
+    href: "/",
+    thumb: "/images/home-page-desktop-thumbnail.webp",
+    active: true,
+  },
+  {
+    id: "Work",
+    label: "Work",
+    href: "/cases",
+    thumb: "/images/work-page-desktop-thumbnail.webp",
+  },
+  {
+    id: "Expertise",
+    label: "Expertise",
+    href: "/expertise",
+    thumb: "/images/expertise-desktop-thumbnail.webp",
+  },
+  {
+    id: "About",
+    label: "About",
+    href: "/about",
+    thumb: "/images/about-us-desktop-thumbnail.webp",
+  },
+  {
+    id: "Contact",
+    label: "Contact",
+    href: "/contact",
+    thumb: "/images/contacts-page-desktop-thumbnail.webp",
+  },
+  {
+    id: "Join us",
+    label: "Join us",
+    href: "https://jobs.buildinamsterdam.com/",
+    thumb: "/images/join-us-desktop-thumbnail.webp",
+    external: true,
+  },
+  {
+    id: "Knowledge",
+    label: "Knowledge",
+    href: "/articles",
+    thumb: "/images/knowledge-page-desktop-thumbnail.webp",
+  },
 ];
 
 /** Follow-us social links — the chip styling is identical for both (verified byte-equal
  *  class strings); only the destination/icon metadata varies per item. */
 const SOCIALS = [
-  { href: "https://www.instagram.com/buildinamsterdam/", label: "Instagram", icon: "/icons/social-instagram.svg", alt: "Instagram logo", w: 15, h: 15 },
-  { href: "https://nl.linkedin.com/company/build-in-amsterdam", label: "LinkedIn", icon: "/icons/social-linkedin.svg", alt: "Linkedin logo", w: 15, h: 16 },
+  {
+    href: "https://www.instagram.com/buildinamsterdam/",
+    label: "Instagram",
+    icon: "/icons/social-instagram.svg",
+    alt: "Instagram logo",
+    w: 15,
+    h: 15,
+  },
+  {
+    href: "https://nl.linkedin.com/company/build-in-amsterdam",
+    label: "LinkedIn",
+    icon: "/icons/social-linkedin.svg",
+    alt: "Linkedin logo",
+    w: 15,
+    h: 16,
+  },
 ];
 
 interface NavOverlayProps {
@@ -134,7 +186,9 @@ export default function NavOverlay({ open }: NavOverlayProps) {
       style={{
         // The panel rises from below on open (verified live: translateY 100% → 0, 0.65s).
         transform: `translateY(${open ? "0%" : "100%"})`,
-        transition: prefersReducedMotion ? "none" : `transform 0.65s ${NAV_EASE}`,
+        transition: prefersReducedMotion
+          ? "none"
+          : `transform 0.65s ${NAV_EASE}`,
       }}
     >
       {/* Parallax track: the content rises slightly slower than the panel (verified -30% → 0),
@@ -143,21 +197,28 @@ export default function NavOverlay({ open }: NavOverlayProps) {
         className="relative h-full"
         style={{
           transform: `translateY(${open ? "0%" : "-30%"})`,
-          transition: prefersReducedMotion ? "none" : `transform 0.65s ${NAV_EASE}`,
+          transition: prefersReducedMotion
+            ? "none"
+            : `transform 0.65s ${NAV_EASE}`,
         }}
       >
         {/* Top inset steps at min-width:1280px like everything else (live-verified): <1280 =
             3vh (23 @768h / 21 @700h / 25.5 @850h), ≥1280 = 4vh (30.72 @768h, 36 @900h).
             Card width / gap / side padding step at the same breakpoint (live-verified curve:
             <1280 → card 350px FIXED + gap/pad 15; ≥1280 → card 40vh + gap/pad 35). */}
-        <ul ref={scrollerRef} className="no-scrollbar flex gap-[15px] overflow-x-auto px-[15px] pt-[3vh] min-[1280px]:gap-[35px] min-[1280px]:px-[35px] min-[1280px]:pt-[4vh]">
+        <ul
+          ref={scrollerRef}
+          className="no-scrollbar flex gap-[15px] overflow-x-auto px-[15px] pt-[3vh] min-[1280px]:gap-[35px] min-[1280px]:px-[35px] min-[1280px]:pt-[4vh]"
+        >
           {ITEMS.map((it) => (
             <li key={it.id} className="shrink-0">
               <a
                 id={`menu-nav-${it.id}`}
-                href={it.href}
+                href={it.external ? it.href : asset(it.href)}
                 tabIndex={open ? 0 : -1}
-                {...(it.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                {...(it.external
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
                 className="group block w-[350px] min-[1280px]:w-[40vh]"
               >
                 {/* Label font rides the fluid scale above 1440 (live-verified 2026-06-13:
@@ -179,7 +240,7 @@ export default function NavOverlay({ open }: NavOverlayProps) {
                 <span className="mt-[12px] block aspect-[71/38] w-full overflow-hidden rounded-[4px]">
                   <span className="block h-full w-full scale-[1.03] transition-transform duration-[650ms] ease-[cubic-bezier(0.45,0.02,0.09,0.98)] group-focus-visible:scale-100 [@media(hover:hover)_and_(pointer:fine)]:group-hover:scale-100">
                     <img
-                      src={it.thumb}
+                      src={asset(it.thumb)}
                       alt={`${it.label} page thumbnail`}
                       loading="lazy"
                       className="h-full w-full object-cover"
@@ -195,8 +256,11 @@ export default function NavOverlay({ open }: NavOverlayProps) {
             right 60 / bottom 64; label NHaasGroteskTXPro 12px/500/uppercase white; each social
             link is a 50×32 black chip with a 1px WHITE OUTLINE that inverts on hover
             (utilities below = the live `.efuxuq a` rules verbatim); icon row sits 2px down). */}
-        <nav aria-label="Follow us" className="absolute bottom-16 right-[60px] flex items-center gap-[16px]">
-        {/* The LABEL font rides the Hero's fluid scale above 1440 (live 2026-06-12: 12px at
+        <nav
+          aria-label="Follow us"
+          className="absolute bottom-16 right-[60px] flex items-center gap-[16px]"
+        >
+          {/* The LABEL font rides the Hero's fluid scale above 1440 (live 2026-06-12: 12px at
             1024–1440, 13.2px @1920 = max(12px, 8.4px+0.25vw)) while the CHIPS stay fixed
             (h 32 / right 60 / dist-to-base 62 measured constant at 1024/1440/1920).
             line-height: normal (NOT 1.2) — the live wraps this text in a flex-item with
@@ -204,23 +268,31 @@ export default function NavOverlay({ open }: NavOverlayProps) {
             box; `normal` also scales with the fluid font (a fixed 15px would break @1920).
             Re-extracted 2026-06-13 (BUG 3): glyph cy 819.3→820 @1440 / 687.3→688 @1024,
             matching the live (820.5/688.5; ~0.5px residual is sub-pixel glyph rounding). */}
-        <span className="font-ui text-[max(12px,calc(8.4px+0.25vw))] font-medium uppercase leading-[normal]">Follow us</span>
-        <ul className="flex translate-y-[2px] items-center">
-          {SOCIALS.map((s) => (
-            <li key={s.label}>
-              <a
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={s.label}
-                tabIndex={open ? 0 : -1}
-                className="flex h-[1.88rem] min-w-[2.5rem] items-center justify-center bg-black px-[0.88rem] py-[0.56rem] outline outline-1 outline-white focus-visible:invert-[1] focus-visible:outline-black active:invert-[1] active:outline-black min-[768px]:h-8 min-[768px]:min-w-[3.125rem] [@media(hover:hover)_and_(pointer:fine)]:hover:invert-[1] [@media(hover:hover)_and_(pointer:fine)]:hover:outline-black"
-              >
-                <img src={s.icon} alt={s.alt} width={s.w} height={s.h} className="h-[14px] w-auto" />
-              </a>
-            </li>
-          ))}
-        </ul>
+          <span className="font-ui text-[max(12px,calc(8.4px+0.25vw))] font-medium uppercase leading-[normal]">
+            Follow us
+          </span>
+          <ul className="flex translate-y-[2px] items-center">
+            {SOCIALS.map((s) => (
+              <li key={s.label}>
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  tabIndex={open ? 0 : -1}
+                  className="flex h-[1.88rem] min-w-[2.5rem] items-center justify-center bg-black px-[0.88rem] py-[0.56rem] outline outline-1 outline-white focus-visible:invert-[1] focus-visible:outline-black active:invert-[1] active:outline-black min-[768px]:h-8 min-[768px]:min-w-[3.125rem] [@media(hover:hover)_and_(pointer:fine)]:hover:invert-[1] [@media(hover:hover)_and_(pointer:fine)]:hover:outline-black"
+                >
+                  <img
+                    src={asset(s.icon)}
+                    alt={s.alt}
+                    width={s.w}
+                    height={s.h}
+                    className="h-[14px] w-auto"
+                  />
+                </a>
+              </li>
+            ))}
+          </ul>
         </nav>
       </div>
     </nav>

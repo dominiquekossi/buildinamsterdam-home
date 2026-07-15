@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef } from "react";
+import { asset } from "@/utils/assetPath";
 
 /**
  * ContactGallery — the left (order-1) gallery of /contact: two vertical image tracks driven by a
@@ -50,7 +51,8 @@ const ENTER_OFFSET_PX = 50;
 const ENTER_MS = 1600;
 const ENTER_EASE = "cubic-bezier(0.42, 0, 0.21, 1)";
 
-const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
+const clamp = (v: number, lo: number, hi: number) =>
+  Math.max(lo, Math.min(hi, v));
 
 const prefersReducedMotion =
   typeof window !== "undefined" &&
@@ -81,7 +83,9 @@ export default function ContactGallery() {
     let ranges: number[] = [];
     let rMax = 1;
     const measure = () => {
-      ranges = tracks.map((c) => Math.max(0, c.scrollHeight - window.innerHeight));
+      ranges = tracks.map((c) =>
+        Math.max(0, c.scrollHeight - window.innerHeight),
+      );
       rMax = Math.max(1, ...ranges);
     };
     const apply = (S: number) => {
@@ -103,7 +107,10 @@ export default function ContactGallery() {
       : wrappers.map((w, i) =>
           w.animate(
             [
-              { transform: `translateY(${i === 0 ? ENTER_OFFSET_PX : -ENTER_OFFSET_PX}px)`, opacity: 0 },
+              {
+                transform: `translateY(${i === 0 ? ENTER_OFFSET_PX : -ENTER_OFFSET_PX}px)`,
+                opacity: 0,
+              },
               { transform: "translateY(0px)", opacity: 1 },
             ],
             { duration: ENTER_MS, easing: ENTER_EASE, fill: "both" as const },
@@ -123,7 +130,9 @@ export default function ContactGallery() {
     let lastInputT = performance.now();
     let autoStartT: number | null = null;
     let lastFrameT = performance.now();
-    const markInput = () => { lastInputT = performance.now(); };
+    const markInput = () => {
+      lastInputT = performance.now();
+    };
 
     const frame = () => {
       const now = performance.now();
@@ -133,14 +142,20 @@ export default function ContactGallery() {
         // Idle ≥ HOLD_MS → auto-pan DOWN, re-ramping 0→cruise from this resume's start (autoStartT).
         if (autoStartT === null) autoStartT = now;
         const rampElapsed = now - autoStartT;
-        const v = rampElapsed >= RAMP_MS ? PAN_PX_PER_SEC : PAN_PX_PER_SEC * (rampElapsed / RAMP_MS);
+        const v =
+          rampElapsed >= RAMP_MS
+            ? PAN_PX_PER_SEC
+            : PAN_PX_PER_SEC * (rampElapsed / RAMP_MS);
         target = Math.min(rMax, target + v * dt); // advance from CURRENT S; clamp at R_max (no reverse)
       } else {
         // Recent input (or reduced-motion) → no auto; reset the ramp so the next resume starts at rest.
         autoStartT = null;
       }
       const next = clamp(target, 0, rMax);
-      if (next !== S) { S = next; apply(S); }
+      if (next !== S) {
+        S = next;
+        apply(S);
+      }
       raf = requestAnimationFrame(frame); // runs continuously — the user may scroll up again after clamp
     };
 
@@ -185,7 +200,10 @@ export default function ContactGallery() {
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("resize", onResize);
-      wrappers.forEach((w) => { w.style.transform = ""; w.style.opacity = ""; });
+      wrappers.forEach((w) => {
+        w.style.transform = "";
+        w.style.opacity = "";
+      });
       tracks.forEach((c) => (c.style.transform = ""));
     };
   }, []);
@@ -200,8 +218,16 @@ export default function ContactGallery() {
         {/* Track A (left) — boxes 2:3 (pb-150%); range larger → it is R_max (master, ~18.5 px/s). */}
         <div className="flex flex-col [gap:34px] will-change-transform">
           {TRACK_A.map((img) => (
-            <div key={img.src} className="relative w-full overflow-hidden bg-off-white pb-[150%]">
-              <img src={img.src} alt={img.alt} loading="eager" className="absolute inset-0 h-full w-full object-cover" />
+            <div
+              key={img.src}
+              className="relative w-full overflow-hidden bg-off-white pb-[150%]"
+            >
+              <img
+                src={asset(img.src)}
+                alt={img.alt}
+                loading="eager"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
             </div>
           ))}
         </div>
@@ -211,8 +237,16 @@ export default function ContactGallery() {
         {/* Track B (right) — boxes ≈141.17% (shorter → smaller range → slaved slower, finishes with A). */}
         <div className="flex flex-col [gap:34px] will-change-transform">
           {TRACK_B.map((img) => (
-            <div key={img.src} className="relative w-full overflow-hidden bg-off-white pb-[141.17%]">
-              <img src={img.src} alt={img.alt} loading="eager" className="absolute inset-0 h-full w-full object-cover" />
+            <div
+              key={img.src}
+              className="relative w-full overflow-hidden bg-off-white pb-[141.17%]"
+            >
+              <img
+                src={asset(img.src)}
+                alt={img.alt}
+                loading="eager"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
             </div>
           ))}
         </div>

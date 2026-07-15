@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { CaseItem } from "./casesData";
 import { CASE_COVERS } from "./casesCovers";
+import { asset } from "@/utils/assetPath";
 
 /**
  * CaseCard — one portfolio tile.
@@ -31,7 +32,13 @@ import { CASE_COVERS } from "./casesCovers";
 const FLUID_TEXT = "text-[max(14px,calc(9.8px_+_0.291667vw))] leading-[19.2px]";
 const IMG_FADE_EASE = "cubic-bezier(0.45, 0.02, 0.09, 0.98)";
 
-export default function CaseCard({ item, eager = false }: { item: CaseItem; eager?: boolean }) {
+export default function CaseCard({
+  item,
+  eager = false,
+}: {
+  item: CaseItem;
+  eager?: boolean;
+}) {
   const padBottom = item.ar === "2:3" ? "pb-[150%]" : "pb-[133.333%]";
   const cover = CASE_COVERS[item.slug];
   const imgRef = useRef<HTMLImageElement>(null);
@@ -41,7 +48,11 @@ export default function CaseCard({ item, eager = false }: { item: CaseItem; eage
     const el = imgRef.current;
     if (!el || el.dataset.faded) return;
     el.dataset.faded = "1";
-    el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 250, easing: IMG_FADE_EASE, fill: "both" });
+    el.animate([{ opacity: 0 }, { opacity: 1 }], {
+      duration: 250,
+      easing: IMG_FADE_EASE,
+      fill: "both",
+    });
   };
   // If the image was already complete before React wired onLoad (cache / sync decode), fade now so
   // it can't get stuck invisible at the initial opacity-0.
@@ -51,16 +62,20 @@ export default function CaseCard({ item, eager = false }: { item: CaseItem; eage
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const srcSet = cover?.src2x ? `${cover.src} 1x, ${cover.src2x} 2x` : undefined;
+  const srcSet = cover?.src2x
+    ? `${asset(cover.src)} 1x, ${asset(cover.src2x)} 2x`
+    : undefined;
 
   return (
-    <a href={`/case/${item.slug}`} className="block cursor-pointer">
-      <div className={`relative block w-full overflow-hidden bg-off-white ${padBottom}`}>
+    <a href={asset(`/case/${item.slug}`)} className="block cursor-pointer">
+      <div
+        className={`relative block w-full overflow-hidden bg-off-white ${padBottom}`}
+      >
         {/* Real cover — local WebP, object-fit:cover crops to the AR box (Section 7). */}
         {cover && (
           <img
             ref={imgRef}
-            src={cover.src}
+            src={asset(cover.src)}
             srcSet={srcSet}
             width={cover.w}
             height={cover.h}
@@ -76,7 +91,9 @@ export default function CaseCard({ item, eager = false }: { item: CaseItem; eage
         {/* Category pill — top-right, translucent black chip */}
         {item.pill && (
           <div className="absolute inset-x-[10px] top-[11px] flex justify-end">
-            <span className={`rounded-full bg-black/20 px-[16px] py-[5px] font-ui font-normal text-white ${FLUID_TEXT}`}>
+            <span
+              className={`rounded-full bg-black/20 px-[16px] py-[5px] font-ui font-normal text-white ${FLUID_TEXT}`}
+            >
               {item.pill}
             </span>
           </div>
@@ -85,7 +102,9 @@ export default function CaseCard({ item, eager = false }: { item: CaseItem; eage
         {/* Caption — bottom-left, 20px inset. Color is per-card (live paints light-cover cases BLACK):
             item.caption === "dark" → text-black, else default white. The "·" separator is 16px to
             match the live (title/desc stay 14px, lh 1.2). */}
-        <div className={`absolute inset-x-0 bottom-0 p-[20px] ${item.caption === "dark" ? "text-black" : "text-white"}`}>
+        <div
+          className={`absolute inset-x-0 bottom-0 p-[20px] ${item.caption === "dark" ? "text-black" : "text-white"}`}
+        >
           <div className={FLUID_TEXT}>
             <span className="font-ui font-medium uppercase">{item.name}</span>
             <span className="text-[16px]"> · </span>

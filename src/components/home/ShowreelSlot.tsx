@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal, flushSync } from "react-dom";
 import DotLabel from "../shared/DotLabel";
+import { asset } from "@/utils/assetPath";
 
 /**
  * ShowreelSlot — the left (video) half + its showreel interactions.
@@ -24,7 +25,7 @@ import DotLabel from "../shared/DotLabel";
  *
  * Labels are the CMS values (verified in __NEXT_DATA__): hero_label_video_play/close/mute/unmute.
  */
-const SHOWREEL_SRC = "/videos/showreel.mp4";
+const SHOWREEL_SRC = asset("/videos/showreel.mp4");
 
 const LABEL_PLAY = "Play showreel";
 const LABEL_CLOSE = "Close";
@@ -52,7 +53,12 @@ const prefersReducedMotion =
  *  original (Web Animations API, 2026-06-12). */
 const CLOSE_EASE = "cubic-bezier(0.42, 0, 0.21, 1)";
 
-export default function ShowreelSlot({ onFullscreenChange, onVisualChange, navOpen = false, onCloseNav }: ShowreelSlotProps) {
+export default function ShowreelSlot({
+  onFullscreenChange,
+  onVisualChange,
+  navOpen = false,
+  onCloseNav,
+}: ShowreelSlotProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [fullscreen, setFullscreen] = useState(false);
   // True while the GSAP close timeline runs: the stage + white bg HOLD the fullscreen
@@ -110,7 +116,8 @@ export default function ShowreelSlot({ onFullscreenChange, onVisualChange, navOp
 
   // Cursor-follow position (the label rides the pointer every frame — no CSS lag, like the original).
   useEffect(() => {
-    const onMove = (e: PointerEvent) => setCursor({ x: e.clientX, y: e.clientY });
+    const onMove = (e: PointerEvent) =>
+      setCursor({ x: e.clientX, y: e.clientY });
     window.addEventListener("pointermove", onMove, { passive: true });
     return () => window.removeEventListener("pointermove", onMove);
   }, []);
@@ -211,17 +218,20 @@ export default function ShowreelSlot({ onFullscreenChange, onVisualChange, navOp
           [{ transform: "translateX(20%)" }, { transform: "translateX(0%)" }],
           { duration: 650, delay: 50, easing: CLOSE_EASE, fill: "both" },
         ),
-        col.animate(
-          [{ opacity: 0 }, { opacity: 1 }],
-          { duration: 400, delay: 350, easing: CLOSE_EASE, fill: "both" },
-        ),
+        col.animate([{ opacity: 0 }, { opacity: 1 }], {
+          duration: 400,
+          delay: 350,
+          easing: CLOSE_EASE,
+          fill: "both",
+        }),
       ];
       if (controlsRef.current) {
         anims.push(
-          controlsRef.current.animate(
-            [{ opacity: 1 }, { opacity: 0 }],
-            { duration: 300, easing: CLOSE_EASE, fill: "both" },
-          ),
+          controlsRef.current.animate([{ opacity: 1 }, { opacity: 0 }], {
+            duration: 300,
+            easing: CLOSE_EASE,
+            fill: "both",
+          }),
         );
       }
       closeAnims.current = anims;
@@ -347,7 +357,10 @@ export default function ShowreelSlot({ onFullscreenChange, onVisualChange, navOp
             onClick={toggleMute}
             className="group font-ui text-[11px] font-medium uppercase leading-[13.2px] text-white"
           >
-            <DotLabel label={muted ? LABEL_UNMUTE : LABEL_MUTE} dotColor="#FFFFFF" />
+            <DotLabel
+              label={muted ? LABEL_UNMUTE : LABEL_MUTE}
+              dotColor="#FFFFFF"
+            />
           </button>
         </div>
       )}

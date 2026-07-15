@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { playHomeEntrance } from "../../motion/homeEntrance";
+import { asset } from "@/utils/assetPath";
 import "./IntroLoader.css";
 
 interface IntroLoaderProps {
@@ -36,7 +37,10 @@ const FADE_MS = 200;
 const ENTRANCE_AFTER_FADE_MS = 75; // live: home entrance ≈75–80ms into the fade
 const FADE_EASE = "cubic-bezier(0.4, 0, 0.2, 1)"; // live loader-exit ease (authoritative)
 
-export default function IntroLoader({ onReveal, onComplete }: IntroLoaderProps) {
+export default function IntroLoader({
+  onReveal,
+  onComplete,
+}: IntroLoaderProps) {
   const root = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -79,15 +83,32 @@ export default function IntroLoader({ onReveal, onComplete }: IntroLoaderProps) 
   }, [onReveal, onComplete]);
 
   return (
-    <div ref={root} className="pointer-events-none fixed inset-0 z-[100] flex items-center justify-center bg-black">
+    <div
+      ref={root}
+      className="pointer-events-none fixed inset-0 z-[100] flex items-center justify-center bg-black"
+    >
       {/* Wordmark: three stacked copies of the SVG, clipped to the "BiA." band (static), the
           separator-line band (draws downward) and the words band (reveals left→right) — the
           live clips `g.powered-by` / `rect.vertical-line` inside its inline svg; with the
           file-referenced logo we clip equivalent bands of whole-image copies. */}
       <div className="il-wordmark relative">
-        <img src="/icons/bia-logo.svg" alt="Build in Amsterdam, powered by Front Row" className="il-bia block w-full" />
-        <img src="/icons/bia-logo.svg" alt="" aria-hidden="true" className="il-line absolute inset-0 block w-full" />
-        <img src="/icons/bia-logo.svg" alt="" aria-hidden="true" className="il-words absolute inset-0 block w-full" />
+        <img
+          src={asset("/icons/bia-logo.svg")}
+          alt="Build in Amsterdam, powered by Front Row"
+          className="il-bia block w-full"
+        />
+        <img
+          src={asset("/icons/bia-logo.svg")}
+          alt=""
+          aria-hidden="true"
+          className="il-line absolute inset-0 block w-full"
+        />
+        <img
+          src={asset("/icons/bia-logo.svg")}
+          alt=""
+          aria-hidden="true"
+          className="il-words absolute inset-0 block w-full"
+        />
       </div>
     </div>
   );

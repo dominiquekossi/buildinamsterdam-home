@@ -1,3 +1,5 @@
+import { asset } from "@/utils/assetPath";
+
 /**
  * HeaderLogo — fixed top-left "BiA. Powered by FRONT ROW" wordmark.
  *
@@ -19,11 +21,18 @@
  * only hides the right half, so the short asset shares the SAME viewBox (0 0 534 60) and the
  * SAME 144px render; only the visible glyphs differ. Default = "full" so the home is unchanged.
  */
-export default function HeaderLogo({ variant = "full" }: { variant?: "full" | "short" }) {
-  const src = variant === "short" ? "/icons/bia-logo-short.svg" : "/icons/bia-logo.svg";
+export default function HeaderLogo({
+  variant = "full",
+}: {
+  variant?: "full" | "short";
+}) {
+  const src =
+    variant === "short"
+      ? asset("/icons/bia-logo-short.svg")
+      : asset("/icons/bia-logo.svg");
   return (
     <header className="fixed left-0 top-0 z-50 px-[2vw] py-[30px] mix-blend-exclusion">
-      <a href="/" aria-label="Build in Amsterdam — home">
+      <a href={asset("/")} aria-label="Build in Amsterdam — home">
         <img
           src={src}
           alt="Build in Amsterdam, powered by Front Row"

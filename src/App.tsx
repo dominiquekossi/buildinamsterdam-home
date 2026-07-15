@@ -68,8 +68,12 @@ function HomePage() {
       <div
         className="relative z-10 [--nav-shift:399px] min-[1280px]:[--nav-shift:calc(max(450px,50vh)-1px)]"
         style={{
-          transform: navOpen ? "translateY(calc(-1 * var(--nav-shift)))" : "none",
-          transition: prefersReducedMotion ? "none" : `transform 0.65s ${NAV_EASE}`,
+          transform: navOpen
+            ? "translateY(calc(-1 * var(--nav-shift)))"
+            : "none",
+          transition: prefersReducedMotion
+            ? "none"
+            : `transform 0.65s ${NAV_EASE}`,
         }}
         // While the nav is open the shifted home is a click-to-close backdrop (live renames
         // #main → #menu-close-backdrop while open; clicking it closes the menu).
@@ -84,14 +88,23 @@ function HomePage() {
               onCloseNav={closeNav}
             />
           }
-          contentSlot={<Hero revealed={heroRevealed} fsHidden={showreelFullscreen} />}
+          contentSlot={
+            <Hero revealed={heroRevealed} fsHidden={showreelFullscreen} />
+          }
           videoFullscreen={showreelVisual}
         />
         <HeaderLogo />
       </div>
-      <MenuButton isOpen={navOpen} onClick={toggleNav} revealed={heroRevealed} hidden={showreelFullscreen} />
+      <MenuButton
+        isOpen={navOpen}
+        onClick={toggleNav}
+        revealed={heroRevealed}
+        hidden={showreelFullscreen}
+      />
 
-      {!introComplete && <IntroLoader onReveal={handleReveal} onComplete={handleIntroComplete} />}
+      {!introComplete && (
+        <IntroLoader onReveal={handleReveal} onComplete={handleIntroComplete} />
+      )}
     </>
   );
 }
@@ -103,8 +116,12 @@ function HomePage() {
  * page loads only — no client-side navigation — so the path is stable for the component's lifetime.
  */
 export default function App() {
-  const path =
-    typeof window !== "undefined" ? window.location.pathname.replace(/\/+$/, "") : "";
+  const base = import.meta.env.BASE_URL.replace(/\/+$/, "");
+  const raw =
+    typeof window !== "undefined"
+      ? window.location.pathname.replace(/\/+$/, "")
+      : "";
+  const path = raw.startsWith(base) ? raw.slice(base.length) : raw;
   if (path === "/cases") return <CasesPage />;
   if (path === "/contact") return <ContactPage />;
   return <HomePage />;

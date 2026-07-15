@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { asset } from "@/utils/assetPath";
 
 /**
  * Hero — the right (white) panel content.
@@ -19,7 +20,13 @@ import { useEffect, useRef, useState } from "react";
  * provisional); CTA/topbar fluid scale above 1440 derived 2026-06-12 — s(vw) =
  * max(1, 0.7 + 0.3·vw/1440), exact at 1536/1600/1920; mobile headline size MEDIUM (approx clamp).
  */
-const HEADLINE_LINES = ["We build", "brands &", "digital", "flagship", "stores"];
+const HEADLINE_LINES = [
+  "We build",
+  "brands &",
+  "digital",
+  "flagship",
+  "stores",
+];
 
 // CTA anatomy DEEP re-measured 2026-06-13 (BUG 2 — buildId _MsCuqDt4GbkeAFMyjWlP, unchanged):
 // the live's 6-column grid CELLS are 109px adjacent (pair 218, centered) — BUT the visible
@@ -134,8 +141,14 @@ export default function Hero({ revealed = true, fsHidden = false }: HeroProps) {
       ),
     );
     ids.push(
-      setTimeout(() => setPartsShown((p) => ({ ...p, topbar: true })), zero ? 0 : 500),
-      setTimeout(() => setPartsShown((p) => ({ ...p, lead: true })), zero ? 0 : 800),
+      setTimeout(
+        () => setPartsShown((p) => ({ ...p, topbar: true })),
+        zero ? 0 : 500,
+      ),
+      setTimeout(
+        () => setPartsShown((p) => ({ ...p, lead: true })),
+        zero ? 0 : 800,
+      ),
       setTimeout(() => setPartsShown((p) => ({ ...p, cta: true })), 0), // live: fade-only, no gate
     );
     return () => ids.forEach(clearTimeout);
@@ -209,8 +222,8 @@ export default function Hero({ revealed = true, fsHidden = false }: HeroProps) {
           {/* Lead size steps at min-width:1280px (live-verified bisect: 22px/26.4 at
               1024–1279 → 24px/28.8 from 1280); tracking −0.01em is em-based and scales. */}
           <p className="font-serif-lead text-[18px] leading-[21.6px] tracking-[-0.01em] text-black desktop:text-[22px] desktop:leading-[26.4px] min-[1280px]:text-[24px] min-[1280px]:leading-[28.8px]">
-            We shape the future of commerce by delivering cohesive &amp; captivating
-            omnichannel experiences that connect to convert.
+            We shape the future of commerce by delivering cohesive &amp;
+            captivating omnichannel experiences that connect to convert.
           </p>
         </div>
 
@@ -221,10 +234,13 @@ export default function Hero({ revealed = true, fsHidden = false }: HeroProps) {
           className="mt-[max(41px,calc(28.7px+0.85417vw))] flex justify-center"
           style={{ visibility: partsShown.cta ? "visible" : "hidden" }}
         >
-          <a href="/cases" className={CTA_BASE}>
+          <a href={asset("/cases")} className={CTA_BASE}>
             Our work
           </a>
-          <a href="/contact" className={`${CTA_BASE} border-l-0 pl-[1.2em]`}>
+          <a
+            href={asset("/contact")}
+            className={`${CTA_BASE} border-l-0 pl-[1.2em]`}
+          >
             Contact us
           </a>
         </p>
