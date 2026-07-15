@@ -1,29 +1,31 @@
-# Dependencies & build output (regenerable: cd workspace && npm install && npm run build)
+# Dependencies
 node_modules/
+
+# Build output
 dist/
-build/
+dist-ssr/
 *.tsbuildinfo
 
-# Local agent / editor / tooling state
-.claude/
-.vscode/
-.idea/
-.dscomp/
-.playwright-mcp/
-
-# Deliverable archives & scratch measurement captures (not source)
-*.zip
-/cases-*.jpeg
-/cases-*.jpg
-/cases-*.png
-
-# Logs & env
-*.log
+# Local env & logs
 .env
 .env.*
 !.env.example
+*.log
+logs/
 
-# OS cruft
+# Editor / IDE / tooling
+.vscode/
+.idea/
+.claude/
+.dscomp/
+.playwright-mcp/
+.vite/
+
+# OS
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Misc scratch
+*.local
+docs/.scratch/

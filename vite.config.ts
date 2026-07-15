@@ -5,9 +5,8 @@ import path from "node:path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // svgr: `import Graphic from "./file.svg?react"` → React component (guide §7.3).
-  // svgo is disabled so the extracted live geometry (ids #circle/#filter, the 6-layer
-  // filter chain, class hooks) survives verbatim — optimization would strip/rename them.
+  // GitHub Pages deploys to /<repo-name>/
+  base: "/buildinamsterdam-home/",
   plugins: [react(), svgr({ svgrOptions: { svgo: false } })],
   resolve: {
     alias: {
